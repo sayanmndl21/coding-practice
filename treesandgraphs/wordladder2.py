@@ -26,6 +26,7 @@ class Solution(object):
             for w in layer:
                 if w == endWord:
                     res.extend(k for k in layer[w])
+                    print('res', res)
                 else:
                     for i in range(len(w)):
                         for c in 'abcdefghijklmnopqrstuvwxyz':
@@ -35,5 +36,6 @@ class Solution(object):
                                 
             wordList -= set(newLayer.keys())
             layer = newLayer
+            print(layer, wordList)
             
         return res
