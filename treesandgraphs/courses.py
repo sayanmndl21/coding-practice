@@ -1,5 +1,3 @@
-from collections import defaultdict
-
 class Solution(object):
     def canFinish(self, numCourses, prerequisites):
         """
@@ -7,31 +5,27 @@ class Solution(object):
         :type prerequisites: List[List[int]]
         :rtype: bool
         """
-        courseDict = defaultdict(list)
         
-        for relation in prerequisites:
-            nextCourse, prevCourse = relation[0], relation[1]
-            courseDict[prevCourse].append(nextCourse)
+        graph = [[] for _ in range(numCourses)]
+        visit = [0 for _ in range(numCourses)]
+        
+        for x,y in prerequisites:
+            graph[x].append(y)
             
-        path = [False]*numCourses
-        
-        for currCourse in range(numCourses):
-            if self.isCyclic(currCourse, courseDict, path):
+        def dfs(i):
+            if visit[i] == -1:
                 return False
-        return True
-    
-    def isCyclic(self, currCourse, courseDict, path):
-        if path[currCourse]:
+            if visit[i] == 1:
+                return True
+            
+            visit[i] = -1
+            for j in graph[i]:
+                if not dfs(j):
+                    return False
+            visit[i] = 1
             return True
         
-        path[currCourse] = True
-        
-        #backtracking
-        ret = False
-        for child in courseDict[currCourse]:
-            ret = self.isCyclic(child, courseDict, path)
-            if ret: break
-                
-        path[currCourse] = False
-        return ret
-        
+        for i in range(numCourses):
+            if not dfs(i):
+                return False
+        return True
